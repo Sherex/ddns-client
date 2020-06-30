@@ -1,4 +1,4 @@
-import { log } from './logger.ts'
+import { log } from "./logger.ts";
 
 interface Config {
   ip: string | null;
@@ -17,7 +17,10 @@ async function setLastIp(ip: string): Promise<void> {
       const configJson = JSON.stringify(config, null, 2);
       await Deno.writeTextFile("./config.json", configJson);
     } catch (error) {
-      log('warn', ['last-ip', 'Invalid format in \'config.json\'', 'skipping setting IP']);
+      log(
+        "warn",
+        ["last-ip", "Invalid format in 'config.json'", "skipping setting IP"],
+      );
     }
   }
 }
@@ -31,7 +34,7 @@ async function getLastIp(): Promise<string | null> {
     try {
       config = JSON.parse(await Deno.readTextFile("./config.json"));
     } catch (error) {
-      log('warn', ['last-ip', 'Invalid format in \'config.json\'']);
+      log("warn", ["last-ip", "Invalid format in 'config.json'"]);
     }
   }
 
