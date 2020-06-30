@@ -3,6 +3,9 @@ A simple DDNS Client written in Typescript / Deno.
 
 ## How to use (temporary)
 Currently it's pretty manual, I will add a dockerfile and a Deno bundle ASAP.
+
+### Manually
+Requires [Deno](https://deno.land/#installation)
 ```sh
 $ git clone https://github.com/sherex/ddns-client
 $ cp template.env .env
@@ -13,14 +16,14 @@ $ deno run --allow-read --allow-write --allow-net src/index.ts
 
 ## TODO
 - [ ] Move config from .env to config.json
-  - [ ] Optional .env?
+  - [ ] Support environment variables (not just a .env file)
   - [ ] Update readme
 - [ ] Better provider support
   - [ ] Dynamic import based on provider input
   - [ ] Export needed TS interfaces
   - [ ] Update readme
 - [ ] Docker
-  - [ ] Create dockerfile
+  - [X] Create dockerfile (Needs proper environment variable support)
   - [ ] Publish to Docker Hub
   - [ ] Update readme
 - [ ] Bundle files with Deno
