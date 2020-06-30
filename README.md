@@ -12,19 +12,17 @@ $ deno run --allow-read --allow-write --allow-net src/index.ts
 ```
 
 ## TODO
-- [ ] Finish README
-  - [X] Create config overview
-  - [X] Create providers section
-  - [ ] How to configure
-  - [ ] Get API keys
 - [ ] Move config from .env to config.json
   - [ ] Optional .env?
+  - [ ] Update readme
 - [ ] Better provider support
   - [ ] Dynamic import based on provider input
   - [ ] Export needed TS interfaces
+  - [ ] Update readme
 - [ ] Docker
   - [ ] Create dockerfile
   - [ ] Publish to Docker Hub
+  - [ ] Update readme
 - [ ] Bundle files with Deno
 - [ ] Create executable (Rust bundling)
 
