@@ -13,17 +13,23 @@ $ deno run --allow-read --allow-write --allow-net src/index.ts
 
 ## TODO
 - [ ] Finish README
-  - [ ] Create config overview
-  - [ ] Create providers section
+  - [X] Create config overview
+  - [X] Create providers section
   - [ ] How to configure
   - [ ] Get API keys
 - [ ] Move config from .env to config.json
   - [ ] Optional .env?
+- [ ] Better provider support
+  - [ ] Dynamic import based on provider input
+  - [ ] Export needed TS interfaces
 - [ ] Docker
   - [ ] Create dockerfile
   - [ ] Publish to Docker Hub
 - [ ] Bundle files with Deno
 - [ ] Create executable (Rust bundling)
+
+## Supported DNS providers
+- [GoDaddy](https://godaddy.com/) - [API Key](https://developer.godaddy.com/keys) - [API Docs](https://developer.godaddy.com/doc/endpoint/domains)
 
 ## Configuration
 ### `DOMAIN`
