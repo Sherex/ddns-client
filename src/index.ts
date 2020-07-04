@@ -1,4 +1,4 @@
-import config from "./config.ts";
+import config from "./load-config.ts";
 import { log } from "./lib/logger.ts";
 import { updateRecord } from "./lib/update-record.ts";
 import { Provider } from "./lib/types.ts";

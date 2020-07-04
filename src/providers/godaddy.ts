@@ -1,4 +1,3 @@
-import config from "../config.ts";
 import { log } from "../lib/logger.ts";
 import { Provider } from "../lib/types.ts"
 
