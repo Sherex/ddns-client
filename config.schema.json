@@ -20,6 +20,7 @@
       "type": "object",
       "description": "Defines one or more providers to add or update records at.",
       "additionalProperties": false,
+      "minProperties": 1,
       "properties": {
         "godaddy": {
           "$id": "#/properties/providers/properties/godaddy",
@@ -32,7 +33,6 @@
               "$id": "#/properties/providers/properties/godaddy/properties/apiUrl",
               "type": "string",
               "description": "The url to the providers API.",
-              "default": "https://api.godaddy.com/",
               "examples": [
                 "https://api.godaddy.com/",
                 "https://api.ote-godaddy.com/"
@@ -61,7 +61,13 @@
                     "$id": "#/properties/providers/properties/godaddy/properties/records/items/anyOf/0",
                     "type": "object",
                     "description": "Contains information about the domain and record to add or update.",
-                    "required": ["domainName"],
+                    "required": [
+                      "domainName",
+                      "recordName",
+                      "recordType",
+                      "recordData",
+                      "recordTTL"
+                    ],
                     "additionalProperties": false,
                     "properties": {
                       "domainName": {
@@ -74,26 +80,23 @@
                         "$id": "#/properties/providers/properties/godaddy/properties/records/items/anyOf/0/properties/recordName",
                         "type": "string",
                         "description": "The name of the record. '@' is replaced with the 'domainName'",
-                        "default": "@",
                         "examples": [
-                          "example.com",
-                          "subdomain.example.com",
                           "@",
-                          "subdomain.@"
+                          "subdomain.@",
+                          "example.com",
+                          "subdomain.example.com"
                         ]
                       },
                       "recordType": {
                         "$id": "#/properties/providers/properties/godaddy/properties/records/items/anyOf/0/properties/recordType",
                         "type": "string",
                         "description": "The type of record to add or update.",
-                        "default": "A",
                         "enum": ["A", "AAAA", "CNAME", "MX", "NS", "SOA", "TXT"]
                       },
                       "recordData": {
                         "$id": "#/properties/providers/properties/godaddy/properties/records/items/anyOf/0/properties/recordData",
                         "type": "string",
                         "description": "The data to put in the record. Use '!ip' to automatically get your external IP.",
-                        "default": "!ip",
                         "examples": [
                           "!ip",
                           "10.20.30.40",
@@ -105,7 +108,10 @@
                         "$id": "#/properties/providers/properties/godaddy/properties/records/items/anyOf/0/properties/recordTTL",
                         "type": "integer",
                         "description": "The TTL (time to live) in seconds for the record.",
-                        "default": 3600
+                        "examples": [
+                          3600,
+                          1800
+                        ]
                       }
                     }
                   }

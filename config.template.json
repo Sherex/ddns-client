@@ -1,0 +1,26 @@
+{
+  "$schema": "./config.schema.json",
+  "providers": {
+    "godaddy": {
+      "apiUrl": "https://api.godaddy.com/",
+      "key": "GD_KEY_ENV",
+      "secret": "GD_SECRET_ENV",
+      "records": [
+        {
+          "domainName": "example.com",
+          "recordName": "test.@",
+          "recordData": "!ip",
+          "recordTTL": 3600,
+          "recordType": "A"
+        },
+        {
+          "domainName": "example.com",
+          "recordName": "test2.@",
+          "recordData": "!ip",
+          "recordTTL": 3600,
+          "recordType": "A"
+        }
+      ]
+    }
+  }
+}
