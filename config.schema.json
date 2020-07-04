@@ -1,0 +1,135 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "http://example.com/example.json",
+  "title": "ConfigJson",
+  "type": "object",
+  "description": "Configuration of the ddns-client.",
+  "required": ["providers"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "$id": "#/properties/$schema",
+      "type": "string",
+      "description": "The schema to verify this document against.",
+      "examples": [
+        "./config.schema.json"
+      ]
+    },
+    "providers": {
+      "$id": "#/properties/providers",
+      "type": "object",
+      "description": "Defines one or more providers to add or update records at.",
+      "additionalProperties": false,
+      "properties": {
+        "godaddy": {
+          "$id": "#/properties/providers/properties/godaddy",
+          "type": "object",
+          "description": "Provider GoDaddy.",
+          "required": ["apiUrl", "key", "secret", "records"],
+          "additionalProperties": false,
+          "properties": {
+            "apiUrl": {
+              "$id": "#/properties/providers/properties/godaddy/properties/apiUrl",
+              "type": "string",
+              "description": "The url to the providers API.",
+              "default": "https://api.godaddy.com/",
+              "examples": [
+                "https://api.godaddy.com/",
+                "https://api.ote-godaddy.com/"
+              ]
+            },
+            "key": {
+              "$id": "#/properties/providers/properties/godaddy/properties/key",
+              "type": "string",
+              "description": "The API key you get from https://developer.godaddy.com/keys. Or add '_ENV' at the end of the string to use the string as a name for an env variable containing the key.",
+              "examples": ["r4nDoM5Tr1nG", "GD_KEY_ENV"]
+            },
+            "secret": {
+              "$id": "#/properties/providers/properties/godaddy/properties/secret",
+              "type": "string",
+              "description": "The API secret you get from https://developer.godaddy.com/keys. Or add '_ENV' at the end of the string to use the string as a name for an env variable containing the secret.",
+              "examples": ["r4nDoM5Tr1nG", "GD_SECRET_ENV"]
+            },
+            "records": {
+              "$id": "#/properties/providers/properties/godaddy/properties/records",
+              "type": "array",
+              "description": "All records to add or update at this provider",
+              "items": {
+                "$id": "#/properties/providers/properties/godaddy/properties/records/items",
+                "anyOf": [
+                  {
+                    "$id": "#/properties/providers/properties/godaddy/properties/records/items/anyOf/0",
+                    "type": "object",
+                    "description": "Contains information about the domain and record to add or update.",
+                    "required": ["domainName"],
+                    "additionalProperties": false,
+                    "properties": {
+                      "domainName": {
+                        "$id": "#/properties/providers/properties/godaddy/properties/records/items/anyOf/0/properties/domainName",
+                        "type": "string",
+                        "description": "The domain to add or update this record to.",
+                        "examples": ["example.com"]
+                      },
+                      "recordName": {
+                        "$id": "#/properties/providers/properties/godaddy/properties/records/items/anyOf/0/properties/recordName",
+                        "type": "string",
+                        "description": "The name of the record. '@' is replaced with the 'domainName'",
+                        "default": "@",
+                        "examples": [
+                          "example.com",
+                          "subdomain.example.com",
+                          "@",
+                          "subdomain.@"
+                        ]
+                      },
+                      "recordType": {
+                        "$id": "#/properties/providers/properties/godaddy/properties/records/items/anyOf/0/properties/recordType",
+                        "type": "string",
+                        "description": "The type of record to add or update.",
+                        "default": "A",
+                        "enum": ["A", "AAAA", "CNAME", "MX", "NS", "SOA", "TXT"]
+                      },
+                      "recordData": {
+                        "$id": "#/properties/providers/properties/godaddy/properties/records/items/anyOf/0/properties/recordData",
+                        "type": "string",
+                        "description": "The data to put in the record. Use '!ip' to automatically get your external IP.",
+                        "default": "!ip",
+                        "examples": [
+                          "!ip",
+                          "10.20.30.40",
+                          "example2.com",
+                          "subdomain.example2.com"
+                        ]
+                      },
+                      "recordTTL": {
+                        "$id": "#/properties/providers/properties/godaddy/properties/records/items/anyOf/0/properties/recordTTL",
+                        "type": "integer",
+                        "description": "The TTL (time to live) in seconds for the record.",
+                        "default": 3600
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "storage": {
+      "$id": "#/properties/cache",
+      "type": "object",
+      "description": "Object for storing properties.",
+      "additionalProperties": true,
+      "readOnly": true,
+      "properties": {
+        "lastIp": {
+          "$id": "#/properties/cache/properties/lastIp",
+          "type": "string",
+          "description": "The last external IP for this client.",
+          "readOnly": true
+        }
+      }
+    }
+  }
+}
