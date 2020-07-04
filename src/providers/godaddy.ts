@@ -1,110 +1,105 @@
 import config from "../config.ts";
 import { log } from "../lib/logger.ts";
+import { Provider } from "../lib/types.ts"
 
-interface DNSRecord {
-  name: string;
-  type: string;
-  data?: string;
-  ttl?: number;
-}
+export default class Godaddy {
+  private options: Provider.Provider
+  private fetchConfig: RequestInit
 
-const fetchConfig: RequestInit = {
-  headers: {
-    Authorization: `sso-key ${config.GD_TOKEN}:${config.GD_SECRET}`,
-  },
-};
-
-async function getRecord(
-  domain: string,
-  record: DNSRecord,
-): Promise<DNSRecord | null> {
-  record.name = record.name.replace("@", domain);
-
-  log(
-    "info",
-    ["godaddy", "getting record for domain", domain, "with name", record.name],
-  );
-  const res = await fetch(
-    `${config.GD_BASE_URL}/v1/domains/${domain}/records/${record.type}/${record.name}`,
-    fetchConfig,
-  );
-  if (res.status !== 200) {
-    log(
-      "error",
-      [
-        "godaddy",
-        "failed to GET record",
-        "statuscode",
-        String(res.status),
-        "message",
-        res.statusText,
-      ],
-    );
-    throw Error(
-      `Failed to fetch record. StatusCode: ${res.status}, msg: ${res.statusText}`,
-    );
-  }
-  let data = await res.json();
-  log("info", ["godaddy", "got record", data.length]);
-  if (data && data.length > 0) {
-    data = data[0];
-    return {
-      name: data.name.replace("@", domain),
-      type: data.type,
-      data: data.data,
-      ttl: data.ttl,
-    };
-  } else {
-    return null;
-  }
-}
-
-async function setRecord(domain: string, record: DNSRecord): Promise<void> {
-  record.name = record.name.replace("@", domain);
-  const body = JSON.stringify([
-    {
-      data: record.data,
-      ttl: record.ttl || 3600,
-    },
-  ]);
-  log(
-    "info",
-    ["godaddy", "setting record", "data", record.data ? record.data : "''"],
-  );
-  const res = await fetch(
-    `${config.GD_BASE_URL}/v1/domains/${domain}/records/${record.type}/${record.name}`,
-    {
+  constructor(options: Provider.Provider) {
+    if (options.name !== 'godaddy') throw Error('Invalid provider options for godaddy!')
+    this.options = options
+    this.fetchConfig = {
       headers: {
-        ...fetchConfig.headers,
-        "Content-Type": "application/json",
+        Authorization: `sso-key ${options.key}:${options.secret}`,
+      }
+    }
+  }
+
+  public getRecord = async (domain: string, record: Provider.DNSRecord): Promise<Provider.DNSRecord | null> => {
+    // Godaddy wants '@' if the record is for the root domain
+    if (record.name !== '@') record.name = record.name.replace("@", domain);
+
+    log("info", ["godaddy", "getting record for domain", domain, "with name", record.name]);
+    const res = await fetch(
+      `${this.options.baseUrl}/v1/domains/${domain}/records/${record.type}/${record.name}`,
+      this.fetchConfig,
+    );
+    if (res.status !== 200) {
+      log(
+        "error",
+        [
+          "godaddy",
+          "failed to GET record",
+          "statuscode",
+          String(res.status),
+          "message",
+          res.statusText,
+        ],
+      );
+      throw Error(
+        `Failed to fetch record. StatusCode: ${res.status}, msg: ${res.statusText}`,
+      );
+    }
+    let data = await res.json();
+    log("info", ["godaddy", "got record", data.length]);
+    if (data && data.length > 0) {
+      data = data[0];
+      return {
+        name: data.name.replace("@", domain),
+        type: data.type,
+        data: data.data,
+        ttl: data.ttl,
+      };
+    } else {
+      return null;
+    }
+  }
+
+  public setRecord = async (domain: string, record: Provider.DNSRecord): Promise<void> => {
+    // Godaddy wants '@' if the record is for the root domain
+    if (record.name !== '@') record.name = record.name.replace("@", domain);
+
+    const body = JSON.stringify([
+      {
+        data: record.data,
+        ttl: record.ttl || 3600,
       },
-      body,
-      method: "PUT",
-    },
-  );
-  if (res.status !== 200) {
-    let body = await res.text();
+    ]);
     log(
-      "error",
-      [
-        "godaddy",
-        "failed to PUT record",
-        "statuscode",
-        String(res.status),
-        "message",
-        res.statusText,
-        "body",
+      "info",
+      ["godaddy", "setting record", "data", record.data ? record.data : "''"],
+    );
+    const res = await fetch(
+      `${this.options.baseUrl}/v1/domains/${domain}/records/${record.type}/${record.name}`,
+      {
+        headers: {
+          ...this.fetchConfig.headers,
+          "Content-Type": "application/json",
+        },
         body,
-      ],
+        method: "PUT",
+      },
     );
-    throw Error(
-      `Failed to PUT record. StatusCode: ${res.status}, msg: ${res.statusText}`,
-    );
+    if (res.status !== 200) {
+      let resBody = await res.text();
+      log(
+        "error",
+        [
+          "godaddy",
+          "failed to PUT record",
+          "statuscode",
+          String(res.status),
+          "message",
+          res.statusText,
+          "body",
+          resBody,
+        ],
+      );
+      if (res.status === 422) console.log("PUT Body:\n" + body)
+      throw Error(
+        `Failed to PUT record. StatusCode: ${res.status}, msg: ${res.statusText}`,
+      );
+    }
   }
 }
-
-export {
-  getRecord,
-  setRecord,
-  DNSRecord,
-};

@@ -1,51 +1,49 @@
 import { log } from "./logger.ts";
+import { Config } from "./types.ts";
 
-interface Config {
-  ip: string | null;
-}
+const configPath = Deno.env.get('DDNS_CONFIG_PATH') || './config.json'
 
-async function setLastIp(ip: string): Promise<void> {
-  let config: Config = {
-    ip: null,
-  };
+function setLastIp(ip: string): void {
+  let config: Config.ConfigJson
 
-  if (await exists("./config.json")) {
-    try {
-      config = JSON.parse(await Deno.readTextFile("./config.json"));
-      config.ip = ip;
+  if (!exists(configPath)) {
+    log("warn", ["last-ip", "couldn't find 'config.json'", "skipping setting IP"])
+  }
 
-      const configJson = JSON.stringify(config, null, 2);
-      await Deno.writeTextFile("./config.json", configJson);
-    } catch (error) {
-      log(
-        "warn",
-        ["last-ip", "Invalid format in 'config.json'", "skipping setting IP"],
-      );
-    }
+  try {
+    config = JSON.parse(Deno.readTextFileSync(configPath));
+    if (!config.storage) config.storage = {}
+    config.storage.lastIp = ip;
+
+    const configJson = JSON.stringify(config, null, 2);
+    Deno.writeTextFileSync(configPath, configJson);
+  } catch (error) {
+    log("warn", ["last-ip", "failed to set lastIp in 'config.json'", "skipping setting IP"])
   }
 }
 
-async function getLastIp(): Promise<string | null> {
-  let config: Config = {
-    ip: null,
-  };
+function getLastIp(): string | null {
+  let config: Config.ConfigJson
 
-  if (await exists("./config.json")) {
-    try {
-      config = JSON.parse(await Deno.readTextFile("./config.json"));
-    } catch (error) {
-      log("warn", ["last-ip", "Invalid format in 'config.json'"]);
-    }
+  if (!exists(configPath)) {
+    return null
+  }
+  
+  try {
+    config = JSON.parse(Deno.readTextFileSync(configPath));
+  } catch (error) {
+    log("warn", ["last-ip", "Invalid format in 'config.json'", "error", error]);
+    return null
   }
 
-  if (typeof config.ip === "string") return config.ip;
+  if (config.storage && config.storage.lastIp) return config.storage.lastIp;
 
   return null;
 }
 
-async function exists(path: string): Promise<boolean> {
+function exists(path: string): boolean {
   try {
-    await Deno.stat(path);
+    Deno.statSync(path);
     return true;
   } catch (error) {
     if (error instanceof Deno.errors.NotFound) return false;
