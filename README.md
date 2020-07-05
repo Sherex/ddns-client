@@ -79,6 +79,13 @@ If the value ends with `_ENV` it will try to get the value from the correspondin
 > Example:
 > `GD_KEY_ENV` will be replaced with the value of env variable `GD_KEY`
 
+### Logging
+The minimum level to log can be configured with the environment variable `DDNS_LOGLEVEL`.
+It can be one of the values (case insensitive):  
+`silly` | `debug` | `verbose` | `info` | `warn` | `error`
+
+The default is `info`.
+
 ## TODO
 - [X] Move config from .env to config.json
   - [X] Use config.json
