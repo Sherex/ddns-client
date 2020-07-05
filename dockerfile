@@ -2,7 +2,11 @@ FROM hayd/alpine-deno:1.1.1
 
 WORKDIR /app
 
-VOLUME [ "/app/config.json" ]
+VOLUME [ "/app/config" ]
+ENV DDNS_CONFIG_PATH=./config/config.json
+
+# Script will move them to the /app/config directory later
+ADD config.*.json ./
 
 # Prefer not to run as root.
 USER deno
@@ -13,4 +17,4 @@ ADD src/ .
 RUN deno cache index.ts
 
 # "deno" is entrypoint, so all commands are arguments to deno
-CMD [ "run", "--allow-read", "--allow-write", "--allow-net", "index.ts" ]
+CMD [ "run", "--allow-read", "--allow-write", "--allow-net", "--allow-env", "index.ts" ]
