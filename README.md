@@ -1,4 +1,4 @@
-# Deno DDNS Client
+# Deno DDNS Client 
 A simple DDNS Client written in Typescript / Deno.
 
 This project's purpose was mostly to test Deno and learn Typescript (I have a lot to learn here).
@@ -9,31 +9,38 @@ This project's purpose was mostly to test Deno and learn Typescript (I have a lo
 - Has a JSON Schema for easy configuration
 
 ## How to use
+[![Docker stats](https://dockeri.co/image/sherex/ddns-client)](https://hub.docker.com/r/sherex/ddns-client/)
 ### Docker Compose
-> Will update with DockerHub link when available.
+1. Create a `docker-compose.yml` file
+```yml
+# docker-compose.yml
+version: "3.7"
+services:
+  ddns_client:
+    container_name: ddns-client
+    image: sherex/ddns-client:latest
+    volumes:
+      - "./config:/app/config"
+```
+2. Start the container
 ```sh
-$ git clone https://github.com/sherex/ddns-Client
-$ cd ddns-client
-$ docker-compose up # -d # Add '-d' switch to run as daemon
+$ docker-compose up
 
 # Edit 'config/config.json' - I recommend VSCode to use the JSON schema.
 
 # Start the container
-$ docker-compose up
+$ docker-compose up # -d # Add '-d' switch to run as daemon
 ```
 
 ### Docker
-> Will update with DockerHub link when available.
 ```sh
-$ git clone https://github.com/sherex/ddns-Client
-$ cd ddns-client
-$ docker build . -t ddns-client &&
-  docker run -v /absolute/path/to/volume:/app/config --name ddns-client ddns-client
+# Replace $PWD with %cd% on Windows
+$ docker run -v $PWD/config:/app/config --name ddns-client sherex/ddns-client
 
 # Edit 'config/config.json' - I recommend VSCode to use the JSON schema.
 
 # Start the container
-$ docker-compose up
+$ docker start ddns-client -a # '-a' Attach STDOUT/STDERR and forward signals
 ```
 
 ### Manually
@@ -71,7 +78,7 @@ Check out [`config.schema.json`](./config.schema.json) for configuration options
   - [X] Update readme
 - [X] Docker
   - [X] Create dockerfile
-  - [ ] Publish to Docker Hub
+  - [X] Publish to Docker Hub
   - [X] Update readme
 - [ ] Use schema specified in the `config.json` `$schema` propterty for validation
 - [ ] Create executable (Rust bundling or if Deno eventually supports it [denoland/deno Issue #986](https://github.com/denoland/deno/issues/986))

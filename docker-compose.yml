@@ -2,6 +2,6 @@ version: "3.7"
 services:
   ddns_client:
     container_name: ddns-client
-    build: ./
+    image: sherex/ddns-client:latest
     volumes:
       - "./config:/app/config"
