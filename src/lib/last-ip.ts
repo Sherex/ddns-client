@@ -1,5 +1,6 @@
 import { log } from "./logger.ts";
 import { Config } from "./types.ts";
+import { exists } from "./exists.ts";
 
 const configPath = Deno.env.get('DDNS_CONFIG_PATH') || './config.json'
 
@@ -41,16 +42,6 @@ function getLastIp(): string | null {
   if (config.storage && config.storage.lastIp) return config.storage.lastIp;
 
   return null;
-}
-
-function exists(path: string): boolean {
-  try {
-    Deno.statSync(path);
-    return true;
-  } catch (error) {
-    if (error instanceof Deno.errors.NotFound) return false;
-    throw error;
-  }
 }
 
 export {
