@@ -4,7 +4,7 @@ A simple DDNS Client written in Typescript / Deno.
 This project's purpose was mostly to test Deno and learn Typescript (I have a lot to learn here).
 
 ## Features
-- Update multiple records, at multiple ([supported](/README.md#Supported-DNS-providers)) providers in one config
+- Update multiple records, at multiple ([supported](#Supported-DNS-providers)) providers in one config
 - Automatically get the client's external IP
 - Has a JSON Schema for easy configuration
 
