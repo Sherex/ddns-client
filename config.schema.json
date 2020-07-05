@@ -123,14 +123,14 @@
       }
     },
     "storage": {
-      "$id": "#/properties/cache",
+      "$id": "#/properties/storage",
       "type": "object",
       "description": "Object for storing properties.",
       "additionalProperties": true,
       "readOnly": true,
       "properties": {
         "lastIp": {
-          "$id": "#/properties/cache/properties/lastIp",
+          "$id": "#/properties/storage/properties/lastIp",
           "type": "string",
           "description": "The last external IP for this client.",
           "readOnly": true
