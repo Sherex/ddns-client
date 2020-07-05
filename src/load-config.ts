@@ -2,7 +2,7 @@ import "https://deno.land/x/dotenv/load.ts";
 import validator from 'https://cdn.pika.dev/is-my-json-valid@^2.20.0'
 import * as path from "https://deno.land/std/path/mod.ts";
 import { log } from "./lib/logger.ts";
-import { Config } from "./lib/types.ts"
+import { Config, Provider } from "./lib/types.ts"
 import { exists } from "./lib/exists.ts";
 
 const configPath = Deno.env.get('DDNS_CONFIG_PATH') || './config.json'
@@ -54,7 +54,24 @@ if (!validate(config)) {
   })
 }
 
-// TODO: If provider key and secert ends with _ENV check env vars
+for (const [providerName, props] of Object.entries(config.providers)) {
+  if (!props) continue
+  // TODO: Fix types for provider
+  const provider: any = config.providers[providerName as Provider.ProviderNames]
+
+  Object.entries(props).forEach(([key, value]) => {
+    if (typeof value !== 'string') return
+    if (!value.endsWith('_ENV')) return
+    const envVar = value.replace(/_ENV$/, '')
+    const envValue = Deno.env.get(envVar)
+    if (!envValue) {
+      log("error", ["config", "couldn't find env variable", envVar, "specified in config.json"])
+      return
+    }
+    provider[key] = envValue
+  })
+}
+
 // TODO: Fill defaults based on schema
 
 export default config
