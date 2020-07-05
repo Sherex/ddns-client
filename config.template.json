@@ -15,10 +15,10 @@
         },
         {
           "domainName": "example.com",
-          "recordName": "test2.@",
-          "recordData": "!ip",
+          "recordName": "*.@",
+          "recordData": "@",
           "recordTTL": 3600,
-          "recordType": "A"
+          "recordType": "CNAME"
         }
       ]
     }
