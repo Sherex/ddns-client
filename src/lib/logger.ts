@@ -1,4 +1,6 @@
-async function log(level: string, message: string | string[]) {
+type LogLevel = 'debug' | 'info' | 'warn' | 'error'
+
+async function log(level: LogLevel, message: string | string[]) {
   message = Array.isArray(message) ? message : [message];
   const { date, time, milli } = getDateTime();
   console.log(
