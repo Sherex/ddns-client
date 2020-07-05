@@ -28,7 +28,7 @@ async function updateRecord(provider: Provider.Provider, domain: string, record:
   if (currentRecord && currentRecord.data && currentRecord.data === newRecord.data) {
     log("debug", ["update-record", record.name, "RECORD_DATA is equal to the DNS record", "skipping"]);
     if (record.data === "!ip") {
-      log("info", ["update-record", record.name, "updating lastIp in config"]);
+      log("debug", ["update-record", record.name, "updating lastIp in config"]);
       await setLastIp(currentRecord.data);
     }
     return false

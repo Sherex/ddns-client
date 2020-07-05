@@ -19,7 +19,7 @@ export default class Godaddy {
     // Godaddy wants '@' if the record is for the root domain
     if (record.name !== '@') record.name = record.name.replace("@", domain);
 
-    log("info", ["godaddy", "getting record for domain", domain, "with name", record.name]);
+    log("debug", ["godaddy", "getting record for domain", domain, "with name", record.name]);
     const res = await fetch(
       `${this.options.baseUrl}/v1/domains/${domain}/records/${record.type}/${record.name}`,
       this.fetchConfig,
@@ -41,7 +41,7 @@ export default class Godaddy {
       );
     }
     let data = await res.json();
-    log("info", ["godaddy", "got record", data.length]);
+    log("debug", ["godaddy", "got record", data.length]);
     if (data && data.length > 0) {
       data = data[0];
       return {
@@ -66,7 +66,7 @@ export default class Godaddy {
       },
     ]);
     log(
-      "info",
+      "debug",
       ["godaddy", "setting record", "data", record.data ? record.data : "''"],
     );
     const res = await fetch(

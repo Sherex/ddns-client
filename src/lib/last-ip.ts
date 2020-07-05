@@ -8,6 +8,7 @@ function setLastIp(ip: string): void {
 
   if (!exists(configPath)) {
     log("warn", ["last-ip", "couldn't find 'config.json'", "skipping setting IP"])
+    return
   }
 
   try {
@@ -19,6 +20,7 @@ function setLastIp(ip: string): void {
     Deno.writeTextFileSync(configPath, configJson);
   } catch (error) {
     log("warn", ["last-ip", "failed to set lastIp in 'config.json'", "skipping setting IP"])
+    return
   }
 }
 
