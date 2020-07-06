@@ -3,6 +3,7 @@ type LogLevel = 'silly' | 'debug' | 'info' | 'verbose' | 'warn' | 'error'
 let minimumLogLevel: LogLevel = 'info'
 
 function isLogLevel(level: string | undefined): level is LogLevel {
+  if (typeof level !== 'string') return false
   return typeof getLevel(level as LogLevel) !== 'undefined' 
 }
 
