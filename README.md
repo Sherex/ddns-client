@@ -13,6 +13,8 @@ This project's purpose was mostly to test Deno and learn Typescript (I have a lo
 ## How to use
 [![Docker stats](https://dockeri.co/image/sherex/ddns-client)](https://hub.docker.com/r/sherex/ddns-client/)
 ### Docker Compose
+Use environment variable `DDNS_CRON` to schedule it.
+
 1. Create a `docker-compose.yml` file
 ```yml
 # docker-compose.yml
@@ -20,6 +22,11 @@ version: "3.7"
 services:
   ddns_client:
     container_name: ddns-client
+    environment: 
+      - GD_KEY=YOUR_KEY_HERE
+      - GD_SECRET=YOUR_SECRET_HERE
+      - DDNS_CRON=1 */60 * * * *
+      - DDNS_LOGLEVEL=info
     image: sherex/ddns-client:latest
     volumes:
       - "./config:/app/config"
@@ -37,10 +44,11 @@ $ docker-compose up # -d # Add '-d' switch to run as daemon
 Check out [configuration](#Configuration) further down.
 
 ### Docker
+Use environment variable `DDNS_CRON` to schedule it.
 ```sh
 # Creates the config directory and places config.json inside
 # Replace $PWD with %cd% on Windows
-$ docker run -v $PWD/config:/app/config --name ddns-client sherex/ddns-client
+$ docker run -v $PWD/config:/app/config -d -e "DDNS_CRON=1 */60 * * * *" --name ddns-client sherex/ddns-client
 
 # Edit 'config/config.json' - I recommend VSCode to use the JSON schema.
 
@@ -85,6 +93,14 @@ It can be one of the values (case insensitive):
 `silly` | `debug` | `verbose` | `info` | `warn` | `error`
 
 The default is `info`.
+
+### Cron
+The `index.docker.ts` file starts `index.ts` as a subprocess and exits when it's done.  
+But if you set the environment variable `DDNS_CRON` to a cron string, it will stay running and start `index.ts` every time the cron string matches.
+
+The docker container on [Docker Hub](https://hub.docker.com/r/sherex/ddns-client/) uses this file.
+
+It uses [deno_cron](https://deno.land/x/deno_cron) for the cron jobs.
 
 ## TODO
 - [X] Move config from .env to config.json

@@ -2,6 +2,11 @@ version: "3.7"
 services:
   ddns_client:
     container_name: ddns-client
-    image: sherex/ddns-client:latest
+    environment: 
+      - GD_KEY=YOUR_KEY_HERE
+      - GD_SECRET=YOUR_SECRET_HERE
+      - DDNS_CRON=1 */60 * * * *
+      - DDNS_LOGLEVEL=INFO
+    build: ./
     volumes:
       - "./config:/app/config"
